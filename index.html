@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cofre">
+<meta name="theme-color" content="#1a7a5e">
+<title>Cofre do Casal</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --green:#1a7a5e;--green2:#2ea87d;--gl:#e8f5f0;
+  --gold:#c9933a;--goldl:#fdf3e3;
+  --red:#c0392b;--redl:#fdecea;
+  --bg:#f7f6f2;--card:#fff;--text:#1c1c1c;--muted:#7a7870;--border:#e5e3dc;
+  --r:16px;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden}
+
+/* HEADER */
+.header{background:var(--green);padding:52px 20px 56px;position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.06)}
+.header::after{content:'';position:absolute;bottom:-28px;left:0;right:0;height:56px;background:var(--bg);border-radius:50% 50% 0 0/100% 100% 0 0}
+.header-eyebrow{font-size:11px;color:rgba(255,255,255,.6);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.header-title{font-family:'DM Serif Display',serif;font-size:28px;color:#fff;font-weight:400;margin-bottom:2px}
+.header-sub{font-size:13px;color:rgba(255,255,255,.65)}
+
+/* SCROLL CONTAINER */
+.scroll{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 16px 100px}
+
+/* RING CARD */
+.ring-card{background:var(--card);border-radius:var(--r);padding:20px;margin-top:-18px;position:relative;z-index:2;box-shadow:0 2px 16px rgba(0,0,0,.08);margin-bottom:14px}
+.ring-wrap{display:flex;align-items:center;gap:18px}
+.ring-info h2{font-family:'DM Serif Display',serif;font-size:26px;color:var(--green)}
+.ring-info .sub{font-size:12px;color:var(--muted);margin-top:2px}
+.ring-info .falta{font-size:13px;color:var(--gold);font-weight:500;margin-top:6px}
+.bar-track{height:7px;background:var(--gl);border-radius:4px;overflow:hidden;margin-top:14px}
+.bar-fill{height:100%;background:var(--green2);border-radius:4px;transition:width .6s ease}
+
+/* STAT GRID */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stat{background:var(--card);border-radius:var(--r);padding:14px;box-shadow:0 1px 8px rgba(0,0,0,.05)}
+.stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+.stat-val{font-size:18px;font-weight:500}
+.stat-sub{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);display:flex;padding:8px 0 max(8px,env(safe-area-inset-bottom));z-index:100}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:4px 0;font-family:'DM Sans',sans-serif}
+.nav-icon{width:22px;height:22px;display:flex;align-items:center;justify-content:center}
+.nav-icon svg{width:20px;height:20px;stroke:var(--muted);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s}
+.nav-label{font-size:10px;color:var(--muted);transition:color .2s}
+.nav-btn.active .nav-icon svg{stroke:var(--green)}
+.nav-btn.active .nav-label{color:var(--green);font-weight:500}
+
+/* TABS */
+.tab{display:none}
+.tab.active{display:block}
+
+/* CARD */
+.card{background:var(--card);border-radius:var(--r);padding:16px 16px 10px;box-shadow:0 1px 8px rgba(0,0,0,.05);margin-bottom:14px}
+.card-title{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:500;margin-bottom:14px}
+
+/* FORM ELEMENTS */
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}
+.field input,.field select{width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:10px;font-size:15px;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);outline:none;-webkit-appearance:none;appearance:none}
+.field input:focus,.field select:focus{border-color:var(--green2)}
+.field-row{display:flex;gap:10px}
+.field-row .field{flex:1}
+
+/* BUTTON */
+.btn{width:100%;padding:13px;background:var(--green);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:background .2s;margin-top:4px}
+.btn:active{background:var(--green2)}
+.btn-outline{background:transparent;color:var(--green);border:1.5px solid var(--green)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* LIST ITEMS */
+.list-item{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border)}
+.list-item:last-child{border-bottom:none}
+.dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.dot-green{background:var(--green2)}
+.dot-blue{background:#378ADD}
+.dot-gold{background:var(--gold)}
+.item-info{flex:1;min-width:0}
+.item-name{font-size:14px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.item-val{font-size:14px;font-weight:500;color:var(--green);white-space:nowrap}
+.del-btn{background:none;border:none;font-size:18px;color:var(--muted);cursor:pointer;padding:0 4px;line-height:1;flex-shrink:0}
+.del-btn:active{color:var(--red)}
+
+/* TAG */
+.tag{font-size:10px;padding:2px 8px;border-radius:20px;white-space:nowrap}
+.tag-green{background:var(--gl);color:var(--green)}
+.tag-blue{background:#e6f1fb;color:#0c447c}
+.tag-gold{background:var(--goldl);color:#633806}
+
+/* ALERT */
+.alert{border-radius:12px;padding:12px 14px;margin-bottom:14px}
+.alert-green{background:var(--gl)}
+.alert-gold{background:var(--goldl)}
+.alert-title{font-size:12px;font-weight:500;margin-bottom:3px}
+.alert-green .alert-title,.alert-green p{color:var(--green)}
+.alert-gold .alert-title,.alert-gold p{color:#633806}
+.alert p{font-size:13px}
+
+/* CHECKLIST */
+.check-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.check-item:last-child{border-bottom:none}
+.check-circle{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s}
+.check-circle.done{background:var(--green);border-color:var(--green)}
+.check-circle.done::after{content:'✓';color:#fff;font-size:11px}
+.check-text{font-size:14px;color:var(--text);line-height:1.4}
+.check-item.is-done .check-text{text-decoration:line-through;color:var(--muted)}
+
+/* SYNC STATUS */
+.sync-bar{text-align:center;font-size:11px;color:var(--muted);padding:6px 0 2px;margin-bottom:8px}
+.sync-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green2);margin-right:4px;vertical-align:middle}
+.sync-dot.syncing{background:var(--gold);animation:pulse 1s infinite}
+.sync-dot.error{background:var(--red)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* SETUP SCREEN */
+.setup-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;padding:20px;text-align:center}
+.setup-screen h2{font-family:'DM Serif Display',serif;font-size:24px;margin-bottom:8px}
+.setup-screen p{font-size:14px;color:var(--muted);margin-bottom:28px;line-height:1.6}
+.setup-key-box{background:var(--card);border-radius:var(--r);padding:20px;width:100%;max-width:340px;box-shadow:0 2px 12px rgba(0,0,0,.08)}
+.setup-key-box .field{margin-bottom:16px}
+
+.empty{text-align:center;color:var(--muted);font-size:13px;padding:18px 0}
+.loading{text-align:center;color:var(--muted);font-size:13px;padding:30px 0}
+
+.input-with-pct{position:relative}
+.input-with-pct input{padding-right:48px}
+.input-pct-badge{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px;background:var(--gl);color:var(--green);padding:2px 7px;border-radius:20px;pointer-events:none}
+</style>
+</head>
+<body>
+
+<div id="setup-view" style="display:none">
+  <div class="setup-screen">
+    <div style="width:56px;height:56px;background:var(--gl);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:20px">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+    </div>
+    <h2>Cofre do Casal</h2>
+    <p>Para sincronizar entre vocês dois, criem uma chave secreta em comum. Qualquer palavra ou número que só vocês saibam.</p>
+    <div class="setup-key-box">
+      <div class="field">
+        <label>Chave secreta do casal</label>
+        <input type="text" id="setup-key" placeholder="ex: apartamento2025" autocomplete="off" autocorrect="off" autocapitalize="off">
+      </div>
+      <button class="btn" onclick="entrarComChave()">Entrar</button>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-top:16px;max-width:280px">Use a mesma chave nos dois celulares para ver os mesmos dados.</p>
+  </div>
+</div>
+
+<div id="app-view" style="display:none">
+  <div class="header">
+    <div class="header-eyebrow">Nosso objetivo</div>
+    <div class="header-title">Cofre do Casal</div>
+    <div class="header-sub">Entrada do apartamento</div>
+  </div>
+
+  <div class="scroll">
+    <div class="sync-bar"><span class="sync-dot" id="sync-dot"></span><span id="sync-label">Sincronizado</span></div>
+
+    <div class="ring-card">
+      <p class="card-title" style="margin-bottom:0;margin-bottom:14px">Progresso geral</p>
+      <div class="ring-wrap">
+        <svg width="88" height="88" viewBox="0 0 88 88" style="flex-shrink:0">
+          <circle cx="44" cy="44" r="36" fill="none" stroke="#e8f5f0" stroke-width="8"/>
+          <circle id="ring-c" cx="44" cy="44" r="36" fill="none" stroke="#2ea87d" stroke-width="8"
+            stroke-linecap="round" stroke-dasharray="226.19" stroke-dashoffset="226.19"
+            transform="rotate(-90 44 44)" style="transition:stroke-dashoffset .7s ease"/>
+          <text x="44" y="48" text-anchor="middle" font-size="15" font-family="DM Serif Display,serif" fill="#1a7a5e" id="ring-pct">0%</text>
+        </svg>
+        <div class="ring-info">
+          <h2 id="total-txt">R$ 0</h2>
+          <p class="sub">de <span id="meta-txt">R$ 0</span></p>
+          <p class="falta" id="falta-txt"></p>
+        </div>
+      </div>
+      <div class="bar-track"><div class="bar-fill" id="bar" style="width:0%"></div></div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Aporte/mês</div>
+        <div class="stat-val" id="s-mensal">R$ 0</div>
+        <div class="stat-sub">combinado</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Meses restantes</div>
+        <div class="stat-val" id="s-meses">—</div>
+        <div class="stat-sub">até a meta</div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div id="tab-painel" class="tab active">
+      <div id="alerta-box"></div>
+      <div class="card">
+        <p class="card-title">Configurar meta</p>
+        <div class="field">
+          <label>Valor do imóvel (R$)</label>
+          <input type="number" id="c-imovel" inputmode="numeric" placeholder="215000" onchange="saveConfig()">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>% entrada</label>
+            <input type="number" id="c-pct" inputmode="numeric" placeholder="15" min="5" max="30" onchange="saveConfig()">
+          </div>
+          <div class="field">
+            <label>Meses restantes</label>
+            <input type="number" id="c-meses" inputmode="numeric" placeholder="8" min="1" max="36" onchange="saveConfig()">
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <p class="card-title">Aportes mensais planejados</p>
+        <div class="field">
+          <label>Fernando (R$/mês)</label>
+          <div class="input-with-pct">
+            <input type="number" id="c-af" inputmode="numeric" placeholder="1100" onchange="saveConfig()">
+            <span class="input-pct-badge" id="pct-f">—</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Ela (R$/mês)</label>
+          <div class="input-with-pct">
+            <input type="number" id="c-ae" inputmode="numeric" placeholder="750" onchange="saveConfig()">
+            <span class="input-pct-badge" id="pct-e">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-registrar" class="tab">
+      <div class="card">
+        <p class="card-title">Registrar aporte</p>
+        <div class="field">
+          <label>Descrição</label>
+          <input type="text" id="r-desc" placeholder="Ex: aporte de maio — Fernando">
+        </div>
+        <div class="field">
+          <label>Valor (R$)</label>
+          <input type="number" id="r-val" inputmode="numeric" placeholder="0">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Quem</label>
+            <select id="r-quem">
+              <option value="Fernando">Fernando</option>
+              <option value="Ela">Ela</option>
+              <option value="Casal">Casal</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Data</label>
+            <input type="date" id="r-data">
+          </div>
+        </div>
+        <button class="btn" id="btn-registrar" onclick="registrar()">Registrar</button>
+      </div>
+      <div class="card">
+        <p class="card-title">Histórico</p>
+        <div id="aportes-list"><p class="empty">Nenhum aporte ainda.</p></div>
+      </div>
+    </div>
+
+    <div id="tab-fontes" class="tab">
+      <div class="card">
+        <p class="card-title">Valores disponíveis / extras</p>
+        <div id="fontes-list"><p class="empty">Nenhuma fonte adicionada.</p></div>
+        <div style="padding-top:14px;border-top:1px solid var(--border);margin-top:8px">
+          <div class="field">
+            <label>Nome</label>
+            <input type="text" id="f-label" placeholder="Ex: FGTS, rescisão, bônus">
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Valor (R$)</label>
+              <input type="number" id="f-val" inputmode="numeric" placeholder="0">
+            </div>
+            <div class="field">
+              <label>Tipo</label>
+              <select id="f-tipo">
+                <option value="fgts">FGTS</option>
+                <option value="poup">Poupança</option>
+                <option value="extra">Extra</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-outline" onclick="addFonte()">+ Adicionar fonte</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-check" class="tab">
+      <div class="card">
+        <p class="card-title">Passos até o apartamento</p>
+        <div id="check-list"></div>
+      </div>
+    </div>
+
+  </div><!-- end scroll -->
+
+  <nav class="bottom-nav">
+    <button class="nav-btn active" onclick="setTab('painel',this)">
+      <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+      <span class="nav-label">Painel</span>
+    </button>
+    <button class="nav-btn" onclick="setTab('registrar',this)">
+      <div class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
+      <span class="nav-label">Aporte</span>
+    </button>
+    <button class="nav-btn" onclick="setTab('fontes',this)">
+      <div class="nav-icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg></div>
+      <span class="nav-label">Fontes</span>
+    </button>
+    <button class="nav-btn" onclick="setTab('check',this)">
+      <div class="nav-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
+      <span class="nav-label">Checklist</span>
+    </button>
+  </nav>
+</div><!-- end app-view -->
+
+<script>
+const CIRC = 226.19;
+const RENDA_F = 3700, RENDA_E = 2500;
+const CHECKS_DEFAULT = [
+  "Abrir conta separada (Nubank/Rico) só para o objetivo",
+  "Consultar saldo do FGTS no app da Caixa",
+  "Ativar Tesouro Selic na corretora escolhida",
+  "Simular financiamento no site da Caixa Econômica",
+  "Verificar se se enquadra no Minha Casa Minha Vida",
+  "Reunir documentos: RG, CPF, comprovante de renda",
+  "Quitar bloqueio do FGTS (empréstimo)",
+  "Fazer simulação de aprovação de crédito",
+  "Visitar imóveis dentro do orçamento",
+  "Fechar proposta e assinar contrato"
+];
+
+let KEY = '', state = {config:{imovel:215000,pct:15,meses:8,af:0,ae:0}, fontes:[], aportes:[], checks:[]};
+let syncTimer = null;
+
+function fmt(n){return'R$ '+Math.round(n).toLocaleString('pt-BR')}
+
+/* ---- SETUP ---- */
+function init(){
+  const saved = localStorage.getItem('cofre_key');
+  if(saved){KEY=saved;showApp();loadState()}
+  else{document.getElementById('setup-view').style.display=''}
+  document.getElementById('r-data').value = new Date().toISOString().slice(0,10);
+}
+
+function entrarComChave(){
+  const k = document.getElementById('setup-key').value.trim();
+  if(!k){alert('Digite uma chave para continuar.');return}
+  KEY = 'cofre_' + k.toLowerCase().replace(/\s+/g,'_');
+  localStorage.setItem('cofre_key',KEY);
+  showApp();
+  loadState();
+}
+
+function showApp(){
+  document.getElementById('setup-view').style.display='none';
+  document.getElementById('app-view').style.display='';
+}
+
+/* ---- CLOUD STORAGE via Anthropic API ---- */
+async function cloudGet(){
+  try{
+    const r = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',max_tokens:2000,
+        messages:[{role:'user',content:`Retrieve storage key "${KEY}". Reply ONLY with the raw JSON value stored, or the word NULL if not found. No explanation.`}]
+      })
+    });
+    const d = await r.json();
+    const txt = d.content?.find(c=>c.type==='text')?.text?.trim();
+    if(!txt||txt==='NULL')return null;
+    return JSON.parse(txt);
+  }catch(e){return null}
+}
+
+async function cloudSet(data){
+  try{
+    await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',max_tokens:100,
+        messages:[{role:'user',content:`Store this JSON under key "${KEY}": ${JSON.stringify(data)}. Reply only OK.`}]
+      })
+    });
+  }catch(e){}
+}
+
+/* ---- PERSISTENT STORAGE (iframe storage API) ---- */
+async function remoteGet(){
+  try{
+    const r = await window.storage.get(KEY);
+    if(!r)return null;
+    return JSON.parse(r.value);
+  }catch(e){return null}
+}
+
+async function remoteSet(data){
+  try{
+    await window.storage.set(KEY, JSON.stringify(data), true);
+  }catch(e){}
+}
+
+function setSyncStatus(status){
+  const dot = document.getElementById('sync-dot');
+  const label = document.getElementById('sync-label');
+  dot.className = 'sync-dot' + (status==='syncing'?' syncing':status==='error'?' error':'');
+  label.textContent = status==='syncing'?'Sincronizando...':status==='error'?'Sem conexão':'Sincronizado';
+}
+
+async function loadState(){
+  setSyncStatus('syncing');
+  try{
+    const remote = await remoteGet();
+    if(remote){
+      state = remote;
+      if(!state.checks||!state.checks.length){
+        state.checks = CHECKS_DEFAULT.map((t,i)=>({id:i,text:t,done:false}));
+      }
+    } else {
+      state.checks = CHECKS_DEFAULT.map((t,i)=>({id:i,text:t,done:false}));
+      await saveState();
+    }
+    setSyncStatus('ok');
+  }catch(e){
+    setSyncStatus('error');
+  }
+  applyConfigToFields();
+  renderAll();
+  calc();
+}
+
+async function saveState(){
+  setSyncStatus('syncing');
+  try{
+    await remoteSet(state);
+    setSyncStatus('ok');
+  }catch(e){
+    setSyncStatus('error');
+  }
+}
+
+function scheduleSave(){
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(saveState, 800);
+}
+
+/* ---- CONFIG ---- */
+function saveConfig(){
+  const af = parseFloat(document.getElementById('c-af').value)||0;
+  const ae = parseFloat(document.getElementById('c-ae').value)||0;
+  state.config = {
+    imovel: parseFloat(document.getElementById('c-imovel').value)||215000,
+    pct: parseFloat(document.getElementById('c-pct').value)||15,
+    meses: parseInt(document.getElementById('c-meses').value)||8,
+    af, ae
+  };
+  document.getElementById('pct-f').textContent = af?Math.round(af/RENDA_F*100)+'%':'—';
+  document.getElementById('pct-e').textContent = ae?Math.round(ae/RENDA_E*100)+'%':'—';
+  scheduleSave();
+  calc();
+}
+
+function applyConfigToFields(){
+  const c = state.config;
+  document.getElementById('c-imovel').value = c.imovel||'';
+  document.getElementById('c-pct').value = c.pct||'';
+  document.getElementById('c-meses').value = c.meses||'';
+  document.getElementById('c-af').value = c.af||'';
+  document.getElementById('c-ae').value = c.ae||'';
+  document.getElementById('pct-f').textContent = c.af?Math.round(c.af/RENDA_F*100)+'%':'—';
+  document.getElementById('pct-e').textContent = c.ae?Math.round(c.ae/RENDA_E*100)+'%':'—';
+}
+
+/* ---- CALC ---- */
+function calc(){
+  const c = state.config;
+  const imovel = c.imovel||215000;
+  const pct = c.pct||15;
+  const meses = c.meses||8;
+  const af = c.af||0;
+  const ae = c.ae||0;
+  const meta = Math.round(imovel*pct/100);
+  const totalFontes = (state.fontes||[]).reduce((s,f)=>s+f.val,0);
+  const totalAportes = (state.aportes||[]).reduce((s,a)=>s+a.val,0);
+  const projetado = (af+ae)*meses;
+  const total = Math.round(totalFontes+totalAportes+projetado);
+  const prog = Math.min(100,Math.round(total/meta*100));
+  const falta = Math.max(0,meta-total);
+
+  document.getElementById('meta-txt').textContent = fmt(meta);
+  document.getElementById('total-txt').textContent = fmt(total);
+  document.getElementById('falta-txt').textContent = falta>0?'Faltam '+fmt(falta):'Meta atingida!';
+  document.getElementById('ring-pct').textContent = prog+'%';
+  document.getElementById('ring-c').style.strokeDashoffset = CIRC-(CIRC*prog/100);
+  document.getElementById('bar').style.width = prog+'%';
+  document.getElementById('s-mensal').textContent = fmt(af+ae);
+  document.getElementById('s-meses').textContent = meses;
+
+  const alertBox = document.getElementById('alerta-box');
+  if(prog>=100){
+    alertBox.innerHTML = `<div class="alert alert-green"><p class="alert-title">Meta atingida!</p><p>Vocês chegam ao valor necessário. Guardem o excedente para cartório e mudança.</p></div>`;
+  } else if(falta>0 && (af+ae)>0){
+    const extMes = Math.round(falta/meses);
+    alertBox.innerHTML = `<div class="alert alert-gold"><p class="alert-title">Para fechar a meta</p><p>Precisam de mais ${fmt(extMes)}/mês, ou adicione fontes extras.</p></div>`;
+  } else {
+    alertBox.innerHTML='';
+  }
+}
+
+/* ---- APORTES ---- */
+function registrar(){
+  const desc = document.getElementById('r-desc').value.trim();
+  const val = parseFloat(document.getElementById('r-val').value);
+  const quem = document.getElementById('r-quem').value;
+  const data = document.getElementById('r-data').value;
+  if(!desc||isNaN(val)||val<=0){alert('Preencha descrição e valor.');return}
+  if(!state.aportes)state.aportes=[];
+  state.aportes.push({id:Date.now(),desc,val,quem,data:data||new Date().toISOString().slice(0,10)});
+  document.getElementById('r-desc').value='';
+  document.getElementById('r-val').value='';
+  scheduleSave();
+  renderAportes();
+  calc();
+  document.getElementById('btn-registrar').textContent='Registrado!';
+  setTimeout(()=>document.getElementById('btn-registrar').textContent='Registrar',2000);
+}
+
+function delAporte(id){
+  state.aportes = state.aportes.filter(a=>a.id!==id);
+  scheduleSave();renderAportes();calc();
+}
+
+function renderAportes(){
+  const el = document.getElementById('aportes-list');
+  const list = state.aportes||[];
+  if(!list.length){el.innerHTML='<p class="empty">Nenhum aporte ainda.</p>';return}
+  const sorted=[...list].sort((a,b)=>new Date(b.data)-new Date(a.data));
+  el.innerHTML=sorted.map(a=>`
+    <div class="list-item">
+      <div class="dot dot-green"></div>
+      <div class="item-info">
+        <div class="item-name">${a.desc}</div>
+        <div class="item-sub">${a.quem} · ${a.data?new Date(a.data+'T12:00:00').toLocaleDateString('pt-BR'):'—'}</div>
+      </div>
+      <span class="item-val">${fmt(a.val)}</span>
+      <button class="del-btn" onclick="delAporte(${a.id})">×</button>
+    </div>`).join('');
+}
+
+/* ---- FONTES ---- */
+function addFonte(){
+  const label=document.getElementById('f-label').value.trim();
+  const val=parseFloat(document.getElementById('f-val').value);
+  const tipo=document.getElementById('f-tipo').value;
+  if(!label||isNaN(val)||val<=0)return;
+  if(!state.fontes)state.fontes=[];
+  state.fontes.push({id:Date.now(),label,val,tipo});
+  document.getElementById('f-label').value='';
+  document.getElementById('f-val').value='';
+  scheduleSave();renderFontes();calc();
+}
+
+function delFonte(id){
+  state.fontes=state.fontes.filter(f=>f.id!==id);
+  scheduleSave();renderFontes();calc();
+}
+
+function renderFontes(){
+  const el=document.getElementById('fontes-list');
+  const list=state.fontes||[];
+  if(!list.length){el.innerHTML='<p class="empty">Nenhuma fonte adicionada.</p>';return}
+  el.innerHTML=list.map(f=>`
+    <div class="list-item">
+      <div class="dot ${f.tipo==='fgts'?'dot-green':f.tipo==='poup'?'dot-blue':'dot-gold'}"></div>
+      <div class="item-info">
+        <div class="item-name">${f.label}</div>
+        <div class="item-sub"><span class="tag ${f.tipo==='fgts'?'tag-green':f.tipo==='poup'?'tag-blue':'tag-gold'}">${f.tipo==='fgts'?'FGTS':f.tipo==='poup'?'Poupança':'Extra'}</span></div>
+      </div>
+      <span class="item-val">${fmt(f.val)}</span>
+      <button class="del-btn" onclick="delFonte(${f.id})">×</button>
+    </div>`).join('');
+}
+
+/* ---- CHECKLIST ---- */
+function toggleCheck(id){
+  const item=(state.checks||[]).find(c=>c.id===id);
+  if(item){item.done=!item.done;scheduleSave();renderCheck()}
+}
+
+function renderCheck(){
+  const el=document.getElementById('check-list');
+  const list=state.checks||[];
+  if(!list.length){el.innerHTML='<p class="empty">Carregando...</p>';return}
+  el.innerHTML=list.map(c=>`
+    <div class="check-item ${c.done?'is-done':''}">
+      <div class="check-circle ${c.done?'done':''}" onclick="toggleCheck(${c.id})"></div>
+      <span class="check-text">${c.text}</span>
+    </div>`).join('');
+}
+
+/* ---- TABS ---- */
+function setTab(name,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(name==='painel'){applyConfigToFields();calc()}
+}
+
+function renderAll(){renderAportes();renderFontes();renderCheck()}
+
+/* ---- AUTO REFRESH (pool a cada 30s para sincronizar com o outro celular) ---- */
+setInterval(async ()=>{
+  try{
+    const remote = await remoteGet();
+    if(remote){
+      state=remote;
+      if(!state.checks||!state.checks.length)state.checks=CHECKS_DEFAULT.map((t,i)=>({id:i,text:t,done:false}));
+      applyConfigToFields();
+      renderAll();
+      calc();
+    }
+  }catch(e){}
+}, 30000);
+
+init();
+</script>
+</body>
+</html>

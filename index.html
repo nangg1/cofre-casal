@@ -2,7 +2,875 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, ini<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cofre">
+<meta name="theme-color" content="#0a0a0a">
+<title>Cofre do Casal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0a0a0a;--bg2:#111;--bg3:#1a1a1a;--bg4:#222;
+  --gold:#c9933a;--gold2:#e8b45a;--gold3:#f5d080;--golddim:#c9933a22;
+  --text:#f0ede8;--muted:#888;--border:#2a2a2a;--border2:#333;
+  --red:#e05555;--green:#4caf82;
+  --r:14px;--r2:10px;
+}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden;font-size:15px}
+
+/* SETUP */
+.setup{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px;text-align:center;background:var(--bg)}
+.setup-logo{width:72px;height:72px;border-radius:50%;background:var(--golddim);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:28px}
+.setup h1{font-family:'Playfair Display',serif;font-size:28px;color:var(--text);margin-bottom:8px;font-weight:600}
+.setup p{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:32px;max-width:300px}
+.setup-box{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);padding:24px;width:100%;max-width:340px}
+.setup-hint{font-size:12px;color:var(--muted);margin-top:16px;max-width:280px;line-height:1.6}
+
+/* HEADER */
+.header{background:linear-gradient(160deg,#111 0%,#0a0a0a 100%);padding:52px 20px 60px;position:relative;overflow:hidden;border-bottom:1px solid var(--border)}
+.header-shine{position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.header-blob{position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(201,147,58,.12) 0%,transparent 70%)}
+.header::after{content:'';position:absolute;bottom:-28px;left:0;right:0;height:56px;background:var(--bg);border-radius:50% 50% 0 0/100% 100% 0 0}
+.header-eyebrow{font-size:10px;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px;opacity:.8}
+.header-title{font-family:'Playfair Display',serif;font-size:26px;color:var(--text);font-weight:600;margin-bottom:4px}
+.header-sub{font-size:12px;color:var(--muted)}
+.header-avatars{display:flex;gap:8px;margin-top:16px;align-items:center}
+.avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;border:2px solid var(--border2);flex-shrink:0}
+.av-f{background:#1a2a3a;color:#6ab0e8;border-color:#2a4a6a}
+.av-m{background:#2a1a2a;color:#e86ab0;border-color:#4a2a4a}
+.av-label{font-size:12px;color:var(--muted)}
+.av-sep{font-size:18px;color:var(--border2)}
+
+/* SCROLL */
+.scroll{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 14px 110px}
+
+/* RING CARD */
+.ring-card{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);padding:20px;margin-top:-18px;position:relative;z-index:2;margin-bottom:12px}
+.ring-card-top{display:flex;align-items:center;gap:16px}
+.ring-info h2{font-family:'Playfair Display',serif;font-size:28px;color:var(--gold2)}
+.ring-info .sub{font-size:12px;color:var(--muted);margin-top:2px}
+.ring-info .falta{font-size:13px;color:var(--gold);font-weight:500;margin-top:6px}
+.bar-track{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-top:14px}
+.bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold3));border-radius:3px;transition:width .7s ease}
+
+/* STAT GRID */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.stat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px}
+.stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
+.stat-val{font-size:18px;font-weight:500;color:var(--text)}
+.stat-sub{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* CARD */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.card-title{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:500;margin-bottom:16px;display:flex;align-items:center;gap:6px}
+.card-title::before{content:'';display:block;width:3px;height:12px;background:var(--gold);border-radius:2px}
+
+/* FORM */
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;padding:11px 14px;border:1px solid var(--border2);border-radius:var(--r2);font-size:14px;font-family:'Inter',sans-serif;background:var(--bg3);color:var(--text);outline:none;-webkit-appearance:none;appearance:none;transition:border .2s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold)}
+.field-row{display:flex;gap:10px}
+.field-row .field{flex:1}
+.pct-wrap{position:relative}
+.pct-wrap input{padding-right:46px}
+.pct-badge{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:10px;background:var(--golddim);color:var(--gold);padding:2px 7px;border-radius:20px;pointer-events:none;border:1px solid var(--gold)44}
+
+/* BUTTONS */
+.btn{width:100%;padding:13px;background:var(--gold);color:#000;border:none;border-radius:var(--r2);font-size:14px;font-weight:500;font-family:'Inter',sans-serif;cursor:pointer;transition:all .2s;letter-spacing:.02em}
+.btn:active{background:var(--gold2);transform:scale(.98)}
+.btn-outline{background:transparent;color:var(--gold);border:1px solid var(--gold)66}
+.btn-outline:active{background:var(--golddim)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-sm{padding:9px 16px;font-size:12px;border-radius:8px;width:auto}
+
+/* LIST */
+.list-item{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--border)}
+.list-item:last-child{border-bottom:none}
+.item-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot-gold{background:var(--gold)}
+.dot-blue{background:#5b8dee}
+.dot-green{background:var(--green)}
+.dot-red{background:var(--red)}
+.item-info{flex:1;min-width:0}
+.item-name{font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.item-val{font-size:13px;font-weight:500;white-space:nowrap}
+.val-pos{color:var(--green)}
+.val-neg{color:var(--red)}
+.val-gold{color:var(--gold)}
+.del-btn{background:none;border:none;color:var(--border2);cursor:pointer;padding:0 4px;font-size:18px;line-height:1;flex-shrink:0;transition:color .2s}
+.del-btn:active{color:var(--red)}
+
+/* TAG */
+.tag{font-size:10px;padding:2px 8px;border-radius:20px;white-space:nowrap;border:1px solid transparent}
+.tag-gold{background:var(--golddim);color:var(--gold);border-color:var(--gold)33}
+.tag-blue{background:#1a2a4a;color:#6ab0e8;border-color:#2a4a6a}
+.tag-green{background:#1a2a1a;color:#4caf82;border-color:#2a4a2a}
+.tag-red{background:#2a1a1a;color:#e05555;border-color:#4a2a2a}
+
+/* ALERT */
+.alert{border-radius:var(--r2);padding:12px 14px;margin-bottom:12px;border:1px solid transparent}
+.alert-gold{background:var(--golddim);border-color:var(--gold)44}
+.alert-gold .at{color:var(--gold2);font-size:12px;font-weight:500;margin-bottom:3px}
+.alert-gold p{font-size:13px;color:var(--gold)}
+.alert-green{background:#1a2a1a;border-color:#2a4a2a}
+.alert-green .at{color:var(--green);font-size:12px;font-weight:500;margin-bottom:3px}
+.alert-green p{font-size:13px;color:#4caf82aa}
+
+/* CHECKLIST */
+.check-item{display:flex;align-items:flex-start;gap:12px;padding:13px 0;border-bottom:1px solid var(--border)}
+.check-item:last-child{border-bottom:none}
+.check-circle{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border2);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-size:11px;color:transparent}
+.check-circle.done{background:var(--gold);border-color:var(--gold);color:#000}
+.check-text{font-size:13px;color:var(--text);line-height:1.5}
+.check-item.is-done .check-text{text-decoration:line-through;color:var(--muted)}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border2);display:flex;padding:8px 0 max(10px,env(safe-area-inset-bottom));z-index:100}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:4px 0;font-family:'Inter',sans-serif}
+.nav-icon svg{width:20px;height:20px;stroke:var(--muted);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s;display:block}
+.nav-label{font-size:9px;color:var(--muted);transition:color .2s;letter-spacing:.03em;text-transform:uppercase}
+.nav-btn.active .nav-icon svg{stroke:var(--gold)}
+.nav-btn.active .nav-label{color:var(--gold);font-weight:500}
+
+/* TABS */
+.tab{display:none}.tab.active{display:block}
+
+/* SYNC */
+.sync-bar{text-align:center;font-size:11px;color:var(--muted);padding:6px 0 2px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:6px}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.sync-dot.syncing{background:var(--gold);animation:pulse 1s infinite}
+.sync-dot.error{background:var(--red)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+
+/* CHART */
+.chart-wrap{position:relative;height:180px;margin-top:8px}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:14px 0}
+
+/* CALC RESULT */
+.calc-result{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r2);padding:14px;margin-top:12px}
+.calc-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)}
+.calc-row:last-child{border-bottom:none}
+.calc-label{font-size:12px;color:var(--muted)}
+.calc-val{font-size:14px;font-weight:500;color:var(--text)}
+.calc-val.highlight{color:var(--gold2)}
+
+/* GASTOS CATEGORIA */
+.cat-bar-wrap{margin-bottom:10px}
+.cat-bar-label{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}
+.cat-bar-label span:first-child{color:var(--text)}
+.cat-bar-label span:last-child{color:var(--muted)}
+.cat-track{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.cat-fill{height:100%;border-radius:3px;transition:width .5s}
+
+.empty{text-align:center;color:var(--muted);font-size:13px;padding:20px 0}
+.section-sep{height:8px}
+</style>
+</head>
+<body>
+
+<!-- SETUP -->
+<div id="setup-view">
+  <div class="setup">
+    <div class="setup-logo">🏠</div>
+    <h1>Cofre do Casal</h1>
+    <p>Fernando & Micaele — entrada do apartamento. Use a mesma chave nos dois celulares para sincronizar.</p>
+    <div class="setup-box">
+      <div class="field">
+        <label>Chave secreta do casal</label>
+        <input type="text" id="setup-key" placeholder="ex: apartamento2025" autocomplete="off" autocorrect="off" autocapitalize="off" style="text-align:center;font-size:16px;letter-spacing:.05em">
+      </div>
+      <button class="btn" onclick="entrar()">Entrar no cofre</button>
+    </div>
+    <p class="setup-hint">Crie qualquer palavra que só vocês dois saibam. Quem abrir com a mesma chave vê os mesmos dados.</p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app-view" style="display:none">
+  <div class="header">
+    <div class="header-shine"></div>
+    <div class="header-blob"></div>
+    <div class="header-eyebrow">Nosso objetivo</div>
+    <div class="header-title">Cofre do Casal</div>
+    <div class="header-sub">Entrada do apartamento · R$ 215.000</div>
+    <div class="header-avatars">
+      <div class="avatar av-f">F</div>
+      <span class="av-label" style="font-size:13px;color:var(--text)">Fernando</span>
+      <span class="av-sep">&</span>
+      <div class="avatar av-m">M</div>
+      <span class="av-label" style="font-size:13px;color:var(--text)">Micaele</span>
+    </div>
+  </div>
+
+  <div class="scroll">
+    <div class="sync-bar">
+      <div class="sync-dot" id="sync-dot"></div>
+      <span id="sync-label">Sincronizado</span>
+    </div>
+
+    <!-- RING + PROGRESS -->
+    <div class="ring-card">
+      <div class="ring-card-top">
+        <svg width="90" height="90" viewBox="0 0 90 90" style="flex-shrink:0">
+          <circle cx="45" cy="45" r="37" fill="none" stroke="#222" stroke-width="8"/>
+          <circle id="ring-c" cx="45" cy="45" r="37" fill="none" stroke="url(#rg)" stroke-width="8"
+            stroke-linecap="round" stroke-dasharray="232.48" stroke-dashoffset="232.48"
+            transform="rotate(-90 45 45)" style="transition:stroke-dashoffset .8s ease"/>
+          <defs><linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#c9933a"/><stop offset="100%" stop-color="#f5d080"/></linearGradient></defs>
+          <text x="45" y="49" text-anchor="middle" font-size="14" font-family="Playfair Display,serif" fill="#e8b45a" id="ring-pct">0%</text>
+        </svg>
+        <div class="ring-info">
+          <h2 id="total-txt">R$ 0</h2>
+          <p class="sub">de <span id="meta-txt">R$ 0</span></p>
+          <p class="falta" id="falta-txt"></p>
+        </div>
+      </div>
+      <div class="bar-track"><div class="bar-fill" id="bar" style="width:0%"></div></div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Aporte/mês</div>
+        <div class="stat-val" id="s-mensal">R$ 0</div>
+        <div class="stat-sub">Fernando + Micaele</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Meses restantes</div>
+        <div class="stat-val" id="s-meses">—</div>
+        <div class="stat-sub">até a meta</div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div id="tab-painel" class="tab active">
+      <div id="alerta-box"></div>
+      <div class="card">
+        <div class="card-title">Configurar meta</div>
+        <div class="field">
+          <label>Valor do imóvel (R$)</label>
+          <input type="number" id="c-imovel" inputmode="numeric" placeholder="215000" onchange="saveConfig()">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>% de entrada</label>
+            <input type="number" id="c-pct" inputmode="numeric" placeholder="15" onchange="saveConfig()">
+          </div>
+          <div class="field">
+            <label>Meses restantes</label>
+            <input type="number" id="c-meses" inputmode="numeric" placeholder="8" onchange="saveConfig()">
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Aportes mensais planejados</div>
+        <div class="field">
+          <label>Fernando (R$/mês)</label>
+          <div class="pct-wrap">
+            <input type="number" id="c-af" inputmode="numeric" placeholder="0" onchange="saveConfig()">
+            <span class="pct-badge" id="pct-f">—</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Micaele (R$/mês)</label>
+          <div class="pct-wrap">
+            <input type="number" id="c-ae" inputmode="numeric" placeholder="0" onchange="saveConfig()">
+            <span class="pct-badge" id="pct-e">—</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Evolução da poupança</div>
+        <div class="chart-wrap">
+          <canvas id="chart-evolucao" role="img" aria-label="Gráfico de evolução da poupança">Evolução mensal da poupança.</canvas>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-registrar" class="tab">
+      <div class="card">
+        <div class="card-title">Registrar aporte</div>
+        <div class="field">
+          <label>Descrição</label>
+          <input type="text" id="r-desc" placeholder="Ex: aporte de maio">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Valor (R$)</label>
+            <input type="number" id="r-val" inputmode="numeric" placeholder="0">
+          </div>
+          <div class="field">
+            <label>Quem</label>
+            <select id="r-quem">
+              <option value="Fernando">Fernando</option>
+              <option value="Micaele">Micaele</option>
+              <option value="Casal">Casal</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>Data</label>
+          <input type="date" id="r-data">
+        </div>
+        <button class="btn" id="btn-reg" onclick="registrarAporte()">Registrar aporte</button>
+      </div>
+      <div class="card">
+        <div class="card-title">Histórico de aportes</div>
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <button class="btn btn-outline btn-sm" id="fil-todos" onclick="filtrarAportes('todos',this)">Todos</button>
+          <button class="btn btn-outline btn-sm" id="fil-f" onclick="filtrarAportes('Fernando',this)">Fernando</button>
+          <button class="btn btn-outline btn-sm" id="fil-m" onclick="filtrarAportes('Micaele',this)">Micaele</button>
+        </div>
+        <div id="aportes-list"><p class="empty">Nenhum aporte ainda.</p></div>
+      </div>
+    </div>
+
+    <div id="tab-gastos" class="tab">
+      <div class="card">
+        <div class="card-title">Registrar gasto</div>
+        <div class="field">
+          <label>Descrição</label>
+          <input type="text" id="g-desc" placeholder="Ex: jantar fora">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Valor (R$)</label>
+            <input type="number" id="g-val" inputmode="numeric" placeholder="0">
+          </div>
+          <div class="field">
+            <label>Categoria</label>
+            <select id="g-cat">
+              <option value="Alimentação">Alimentação</option>
+              <option value="Lazer">Lazer</option>
+              <option value="Transporte">Transporte</option>
+              <option value="Compras">Compras</option>
+              <option value="Assinaturas">Assinaturas</option>
+              <option value="Outros">Outros</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Quem</label>
+            <select id="g-quem">
+              <option value="Fernando">Fernando</option>
+              <option value="Micaele">Micaele</option>
+              <option value="Casal">Casal</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Data</label>
+            <input type="date" id="g-data">
+          </div>
+        </div>
+        <button class="btn btn-outline" onclick="registrarGasto()">Registrar gasto</button>
+      </div>
+      <div class="card">
+        <div class="card-title">Por categoria (mês atual)</div>
+        <div id="gastos-cats"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Histórico de gastos</div>
+        <div id="gastos-list"><p class="empty">Nenhum gasto registrado.</p></div>
+      </div>
+    </div>
+
+    <div id="tab-fontes" class="tab">
+      <div class="card">
+        <div class="card-title">Valores disponíveis / extras</div>
+        <div id="fontes-list"><p class="empty">Nenhuma fonte adicionada.</p></div>
+        <div class="divider"></div>
+        <div class="field">
+          <label>Nome</label>
+          <input type="text" id="f-label" placeholder="Ex: FGTS, rescisão, bônus">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Valor (R$)</label>
+            <input type="number" id="f-val" inputmode="numeric" placeholder="0">
+          </div>
+          <div class="field">
+            <label>Tipo</label>
+            <select id="f-tipo">
+              <option value="fgts">FGTS</option>
+              <option value="poup">Poupança</option>
+              <option value="extra">Extra</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-outline" onclick="addFonte()">+ Adicionar fonte</button>
+      </div>
+    </div>
+
+    <div id="tab-calc" class="tab">
+      <div class="card">
+        <div class="card-title">Simulador de financiamento</div>
+        <div class="field">
+          <label>Valor do imóvel (R$)</label>
+          <input type="number" id="calc-imovel" inputmode="numeric" placeholder="215000" value="215000">
+        </div>
+        <div class="field">
+          <label>Entrada disponível (R$)</label>
+          <input type="number" id="calc-entrada" inputmode="numeric" placeholder="32000">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Taxa anual (%)</label>
+            <input type="number" id="calc-taxa" inputmode="numeric" placeholder="8.5" value="8.5" step="0.1">
+          </div>
+          <div class="field">
+            <label>Prazo (anos)</label>
+            <input type="number" id="calc-prazo" inputmode="numeric" placeholder="30" value="30">
+          </div>
+        </div>
+        <button class="btn" onclick="calcFinanc()">Calcular</button>
+        <div id="calc-result"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Checklist — passos até o apê</div>
+        <div id="check-list"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="nav-btn active" onclick="setTab('painel',this)">
+      <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+      <span class="nav-label">Painel</span>
+    </button>
+    <button class="nav-btn" onclick="setTab('registrar',this)">
+      <div class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
+      <span class="nav-label">Aporte</span>
+    </button>
+    <button class="nav-btn" onclick="setTab('gastos',this)">
+      <div class="nav-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+      <span class="nav-label">Gastos</span>
+    </button>
+    <button class="nav-btn" onclick="setTab('fontes',this)">
+      <div class="nav-icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg></div>
+      <span class="nav-label">Fontes</span>
+    </button>
+    <button class="nav-btn" onclick="setTab('calc',this)">
+      <div class="nav-icon"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="10" y2="10"/><line x1="8" y1="14" x2="10" y2="14"/><line x1="8" y1="18" x2="10" y2="18"/><line x1="14" y1="10" x2="16" y2="10"/><line x1="14" y1="14" x2="16" y2="14"/><line x1="14" y1="18" x2="16" y2="18"/></svg></div>
+      <span class="nav-label">Simular</span>
+    </button>
+  </nav>
+</div>
+
+<script>
+const CIRC = 232.48;
+const RENDA_F = 3700, RENDA_E = 2500;
+const CHECKS_DEFAULT = [
+  "Abrir conta separada (Nubank/Rico) só para o objetivo",
+  "Consultar saldo do FGTS no app da Caixa",
+  "Ativar Tesouro Selic na corretora escolhida",
+  "Simular financiamento no site da Caixa Econômica",
+  "Verificar enquadramento no Minha Casa Minha Vida",
+  "Reunir documentos: RG, CPF, comprovante de renda",
+  "Quitar bloqueio do FGTS (empréstimo pendente)",
+  "Fazer simulação de aprovação de crédito",
+  "Visitar imóveis dentro do orçamento",
+  "Assinar contrato e fechar negócio"
+];
+const CAT_COLORS = {Alimentação:'#e8b45a',Lazer:'#5b8dee',Transporte:'#4caf82',Compras:'#e05555',Assinaturas:'#b05be8',Outros:'#888'};
+
+let KEY = '';
+let state = {config:{imovel:215000,pct:15,meses:8,af:0,ae:0},fontes:[],aportes:[],gastos:[],checks:[]};
+let syncTimer = null;
+let filtroAtivo = 'todos';
+let evolChart = null;
+
+const fmt = n => 'R$ ' + Math.round(n).toLocaleString('pt-BR');
+
+/* ---- SETUP ---- */
+function init() {
+  const saved = localStorage.getItem('cofre_key_v2');
+  if (saved) { KEY = saved; showApp(); loadState(); }
+  else document.getElementById('setup-view').style.display = 'flex';
+  document.getElementById('r-data').value = today();
+  document.getElementById('g-data').value = today();
+}
+
+function today() { return new Date().toISOString().slice(0,10); }
+
+function entrar() {
+  const k = document.getElementById('setup-key').value.trim();
+  if (!k) { alert('Digite uma chave para continuar.'); return; }
+  KEY = 'cofre2025_' + k.toLowerCase().replace(/\s+/g,'_');
+  localStorage.setItem('cofre_key_v2', KEY);
+  showApp(); loadState();
+}
+
+function showApp() {
+  document.getElementById('setup-view').style.display = 'none';
+  document.getElementById('app-view').style.display = '';
+}
+
+/* ---- STORAGE (usa window.storage do ambiente Claude) ---- */
+function setSyncStatus(s) {
+  const dot = document.getElementById('sync-dot');
+  const lbl = document.getElementById('sync-label');
+  dot.className = 'sync-dot' + (s==='syncing'?' syncing':s==='error'?' error':'');
+  lbl.textContent = s==='syncing'?'Sincronizando...':s==='error'?'Sem conexão · dados locais':'Sincronizado';
+}
+
+async function remoteGet() {
+  try {
+    const r = await window.storage.get(KEY, true);
+    if (!r) return null;
+    return JSON.parse(r.value);
+  } catch(e) { return null; }
+}
+
+async function remoteSet(data) {
+  try {
+    await window.storage.set(KEY, JSON.stringify(data), true);
+  } catch(e) {}
+}
+
+async function loadState() {
+  setSyncStatus('syncing');
+  try {
+    const remote = await remoteGet();
+    if (remote) {
+      state = remote;
+      if (!state.checks || !state.checks.length)
+        state.checks = CHECKS_DEFAULT.map((t,i) => ({id:i,text:t,done:false}));
+      if (!state.gastos) state.gastos = [];
+    } else {
+      state.checks = CHECKS_DEFAULT.map((t,i) => ({id:i,text:t,done:false}));
+      await remoteSet(state);
+    }
+    setSyncStatus('ok');
+  } catch(e) { setSyncStatus('error'); }
+  applyConfig(); renderAll(); calc();
+}
+
+async function saveState() {
+  setSyncStatus('syncing');
+  try { await remoteSet(state); setSyncStatus('ok'); }
+  catch(e) { setSyncStatus('error'); }
+}
+
+function scheduleSave() {
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(saveState, 900);
+}
+
+/* ---- CONFIG ---- */
+function saveConfig() {
+  const af = parseFloat(document.getElementById('c-af').value)||0;
+  const ae = parseFloat(document.getElementById('c-ae').value)||0;
+  state.config = {
+    imovel: parseFloat(document.getElementById('c-imovel').value)||215000,
+    pct:    parseFloat(document.getElementById('c-pct').value)||15,
+    meses:  parseInt(document.getElementById('c-meses').value)||8,
+    af, ae
+  };
+  document.getElementById('pct-f').textContent = af ? Math.round(af/RENDA_F*100)+'%' : '—';
+  document.getElementById('pct-e').textContent = ae ? Math.round(ae/RENDA_E*100)+'%' : '—';
+  scheduleSave(); calc();
+}
+
+function applyConfig() {
+  const c = state.config;
+  document.getElementById('c-imovel').value = c.imovel||'';
+  document.getElementById('c-pct').value    = c.pct||'';
+  document.getElementById('c-meses').value  = c.meses||'';
+  document.getElementById('c-af').value     = c.af||'';
+  document.getElementById('c-ae').value     = c.ae||'';
+  document.getElementById('pct-f').textContent = c.af ? Math.round(c.af/RENDA_F*100)+'%':'—';
+  document.getElementById('pct-e').textContent = c.ae ? Math.round(c.ae/RENDA_E*100)+'%':'—';
+}
+
+/* ---- CALC ---- */
+function calc() {
+  const c = state.config;
+  const imovel = c.imovel||215000, pct = c.pct||15, meses = c.meses||8;
+  const af = c.af||0, ae = c.ae||0;
+  const meta = Math.round(imovel*pct/100);
+  const totalFontes  = (state.fontes||[]).reduce((s,f)=>s+f.val,0);
+  const totalAportes = (state.aportes||[]).reduce((s,a)=>s+a.val,0);
+  const projetado    = (af+ae)*meses;
+  const total = Math.round(totalFontes+totalAportes+projetado);
+  const prog  = Math.min(100, Math.round(total/meta*100));
+  const falta = Math.max(0, meta-total);
+
+  document.getElementById('meta-txt').textContent  = fmt(meta);
+  document.getElementById('total-txt').textContent = fmt(total);
+  document.getElementById('falta-txt').textContent = falta>0 ? 'Faltam '+fmt(falta) : 'Meta atingida!';
+  document.getElementById('ring-pct').textContent  = prog+'%';
+  document.getElementById('ring-c').style.strokeDashoffset = CIRC-(CIRC*prog/100);
+  document.getElementById('bar').style.width = prog+'%';
+  document.getElementById('s-mensal').textContent = fmt(af+ae);
+  document.getElementById('s-meses').textContent  = meses;
+
+  const alertBox = document.getElementById('alerta-box');
+  if (prog>=100) {
+    alertBox.innerHTML = `<div class="alert alert-green"><p class="at">Meta atingida!</p><p>Vocês chegam ao valor. Guardem o excedente para cartório e mudança.</p></div>`;
+  } else if (falta>0 && (af+ae)>0) {
+    const extMes = Math.round(falta/meses);
+    alertBox.innerHTML = `<div class="alert alert-gold"><p class="at">Para fechar a meta</p><p>Precisam de mais ${fmt(extMes)}/mês ou adicione fontes extras na aba Fontes.</p></div>`;
+  } else alertBox.innerHTML = '';
+
+  renderChart();
+}
+
+/* ---- CHART ---- */
+function renderChart() {
+  const c = state.config;
+  const af = c.af||0, ae = c.ae||0, meses = c.meses||8;
+  const totalFontes  = (state.fontes||[]).reduce((s,f)=>s+f.val,0);
+  const totalAportes = (state.aportes||[]).reduce((s,a)=>s+a.val,0);
+  const labels = [], data = [];
+  for (let i=1; i<=meses; i++) {
+    labels.push('M'+i);
+    data.push(Math.round(totalFontes + totalAportes + (af+ae)*i));
+  }
+  const meta = Math.round((c.imovel||215000)*(c.pct||15)/100);
+  const ctx = document.getElementById('chart-evolucao');
+  if (!ctx) return;
+  if (evolChart) { evolChart.destroy(); }
+  evolChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Acumulado', data, backgroundColor: '#c9933a55', borderColor: '#c9933a', borderWidth: 1.5, borderRadius: 4 },
+        { label: 'Meta', data: Array(meses).fill(meta), type: 'line', borderColor: '#f5d08066', borderWidth: 1.5, borderDash: [5,4], pointRadius: 0, fill: false }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { ticks: { color:'#888', font:{size:10}, callback: v=>'R$'+(v/1000).toFixed(0)+'k' }, grid:{color:'#ffffff0a'} },
+        x: { ticks: { color:'#888', font:{size:10}, autoSkip:false, maxRotation:0 }, grid:{display:false} }
+      }
+    }
+  });
+}
+
+/* ---- APORTES ---- */
+function registrarAporte() {
+  const desc = document.getElementById('r-desc').value.trim();
+  const val  = parseFloat(document.getElementById('r-val').value);
+  const quem = document.getElementById('r-quem').value;
+  const data = document.getElementById('r-data').value;
+  if (!desc || isNaN(val) || val<=0) { alert('Preencha descrição e valor.'); return; }
+  if (!state.aportes) state.aportes = [];
+  state.aportes.push({id:Date.now(), desc, val, quem, data: data||today()});
+  document.getElementById('r-desc').value = '';
+  document.getElementById('r-val').value  = '';
+  scheduleSave(); renderAportes(); calc();
+  const b = document.getElementById('btn-reg');
+  b.textContent = 'Registrado!'; b.disabled = true;
+  setTimeout(()=>{ b.textContent='Registrar aporte'; b.disabled=false; }, 2000);
+}
+
+function delAporte(id) {
+  state.aportes = state.aportes.filter(a=>a.id!==id);
+  scheduleSave(); renderAportes(); calc();
+}
+
+function filtrarAportes(f, btn) {
+  filtroAtivo = f;
+  document.querySelectorAll('[id^=fil-]').forEach(b=>b.style.borderColor='');
+  if (btn) btn.style.borderColor = 'var(--gold)';
+  renderAportes();
+}
+
+function renderAportes() {
+  const el = document.getElementById('aportes-list');
+  const list = (state.aportes||[]).filter(a => filtroAtivo==='todos' || a.quem===filtroAtivo);
+  if (!list.length) { el.innerHTML='<p class="empty">Nenhum aporte.</p>'; return; }
+  const sorted = [...list].sort((a,b)=>new Date(b.data)-new Date(a.data));
+  el.innerHTML = sorted.map(a => `
+    <div class="list-item">
+      <div class="avatar ${a.quem==='Fernando'?'av-f':a.quem==='Micaele'?'av-m':''}" style="width:28px;height:28px;font-size:10px;border-width:1px">${a.quem==='Fernando'?'F':a.quem==='Micaele'?'M':'C'}</div>
+      <div class="item-info">
+        <div class="item-name">${a.desc}</div>
+        <div class="item-sub">${a.quem} · ${a.data?new Date(a.data+'T12:00:00').toLocaleDateString('pt-BR'):'—'}</div>
+      </div>
+      <span class="item-val val-green">${fmt(a.val)}</span>
+      <button class="del-btn" onclick="delAporte(${a.id})">×</button>
+    </div>`).join('');
+}
+
+/* ---- GASTOS ---- */
+function registrarGasto() {
+  const desc = document.getElementById('g-desc').value.trim();
+  const val  = parseFloat(document.getElementById('g-val').value);
+  const cat  = document.getElementById('g-cat').value;
+  const quem = document.getElementById('g-quem').value;
+  const data = document.getElementById('g-data').value;
+  if (!desc || isNaN(val) || val<=0) { alert('Preencha descrição e valor.'); return; }
+  if (!state.gastos) state.gastos = [];
+  state.gastos.push({id:Date.now(), desc, val, cat, quem, data: data||today()});
+  document.getElementById('g-desc').value = '';
+  document.getElementById('g-val').value  = '';
+  scheduleSave(); renderGastos();
+}
+
+function delGasto(id) {
+  state.gastos = state.gastos.filter(g=>g.id!==id);
+  scheduleSave(); renderGastos();
+}
+
+function renderGastos() {
+  const now = new Date();
+  const mesAtual = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  const gastosMes = (state.gastos||[]).filter(g=>g.data&&g.data.startsWith(mesAtual));
+
+  // por categoria
+  const cats = {};
+  gastosMes.forEach(g=>{ cats[g.cat] = (cats[g.cat]||0)+g.val; });
+  const totalCat = Object.values(cats).reduce((s,v)=>s+v,0)||1;
+  const catEl = document.getElementById('gastos-cats');
+  if (!Object.keys(cats).length) {
+    catEl.innerHTML = '<p class="empty">Nenhum gasto este mês.</p>';
+  } else {
+    catEl.innerHTML = Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([cat,val])=>`
+      <div class="cat-bar-wrap">
+        <div class="cat-bar-label"><span>${cat}</span><span>${fmt(val)}</span></div>
+        <div class="cat-track"><div class="cat-fill" style="width:${Math.round(val/totalCat*100)}%;background:${CAT_COLORS[cat]||'#888'}"></div></div>
+      </div>`).join('');
+  }
+
+  // histórico
+  const listEl = document.getElementById('gastos-list');
+  const all = [...(state.gastos||[])].sort((a,b)=>new Date(b.data)-new Date(a.data));
+  if (!all.length) { listEl.innerHTML='<p class="empty">Nenhum gasto registrado.</p>'; return; }
+  listEl.innerHTML = all.map(g=>`
+    <div class="list-item">
+      <div class="item-dot" style="background:${CAT_COLORS[g.cat]||'#888'}"></div>
+      <div class="item-info">
+        <div class="item-name">${g.desc}</div>
+        <div class="item-sub">${g.cat} · ${g.quem} · ${g.data?new Date(g.data+'T12:00:00').toLocaleDateString('pt-BR'):'—'}</div>
+      </div>
+      <span class="item-val val-neg">${fmt(g.val)}</span>
+      <button class="del-btn" onclick="delGasto(${g.id})">×</button>
+    </div>`).join('');
+}
+
+/* ---- FONTES ---- */
+function addFonte() {
+  const label = document.getElementById('f-label').value.trim();
+  const val   = parseFloat(document.getElementById('f-val').value);
+  const tipo  = document.getElementById('f-tipo').value;
+  if (!label || isNaN(val) || val<=0) return;
+  if (!state.fontes) state.fontes = [];
+  state.fontes.push({id:Date.now(), label, val, tipo});
+  document.getElementById('f-label').value = '';
+  document.getElementById('f-val').value   = '';
+  scheduleSave(); renderFontes(); calc();
+}
+
+function delFonte(id) {
+  state.fontes = state.fontes.filter(f=>f.id!==id);
+  scheduleSave(); renderFontes(); calc();
+}
+
+function renderFontes() {
+  const el = document.getElementById('fontes-list');
+  const list = state.fontes||[];
+  if (!list.length) { el.innerHTML='<p class="empty">Nenhuma fonte adicionada.</p>'; return; }
+  el.innerHTML = list.map(f=>`
+    <div class="list-item">
+      <div class="item-dot ${f.tipo==='fgts'?'dot-gold':f.tipo==='poup'?'dot-blue':'dot-green'}"></div>
+      <div class="item-info">
+        <div class="item-name">${f.label}</div>
+        <div class="item-sub"><span class="tag ${f.tipo==='fgts'?'tag-gold':f.tipo==='poup'?'tag-blue':'tag-green'}">${f.tipo==='fgts'?'FGTS':f.tipo==='poup'?'Poupança':'Extra'}</span></div>
+      </div>
+      <span class="item-val val-gold">${fmt(f.val)}</span>
+      <button class="del-btn" onclick="delFonte(${f.id})">×</button>
+    </div>`).join('');
+}
+
+/* ---- CHECKLIST ---- */
+function toggleCheck(id) {
+  const item = (state.checks||[]).find(c=>c.id===id);
+  if (item) { item.done=!item.done; scheduleSave(); renderCheck(); }
+}
+
+function renderCheck() {
+  const el = document.getElementById('check-list');
+  const list = state.checks||[];
+  if (!list.length) { el.innerHTML='<p class="empty">Carregando...</p>'; return; }
+  const done = list.filter(c=>c.done).length;
+  el.innerHTML = `<p style="font-size:12px;color:var(--muted);margin-bottom:12px">${done} de ${list.length} concluídos</p>` +
+    list.map(c=>`
+      <div class="check-item ${c.done?'is-done':''}">
+        <div class="check-circle ${c.done?'done':''}" onclick="toggleCheck(${c.id})">${c.done?'✓':''}</div>
+        <span class="check-text">${c.text}</span>
+      </div>`).join('');
+}
+
+/* ---- CALCULADORA FINANCIAMENTO ---- */
+function calcFinanc() {
+  const imovel  = parseFloat(document.getElementById('calc-imovel').value)||215000;
+  const entrada = parseFloat(document.getElementById('calc-entrada').value)||0;
+  const taxaA   = parseFloat(document.getElementById('calc-taxa').value)||8.5;
+  const prazoA  = parseInt(document.getElementById('calc-prazo').value)||30;
+  const financ  = imovel - entrada;
+  const taxaM   = taxaA/100/12;
+  const n       = prazoA*12;
+  const parcela = taxaM>0 ? financ*(taxaM*Math.pow(1+taxaM,n))/(Math.pow(1+taxaM,n)-1) : financ/n;
+  const totalPago = parcela*n;
+  const jurosTotal = totalPago - financ;
+  const pctEntrada = Math.round(entrada/imovel*100);
+  document.getElementById('calc-result').innerHTML = `
+    <div class="calc-result">
+      <div class="calc-row"><span class="calc-label">Valor financiado</span><span class="calc-val">${fmt(financ)}</span></div>
+      <div class="calc-row"><span class="calc-label">Entrada (${pctEntrada}%)</span><span class="calc-val">${fmt(entrada)}</span></div>
+      <div class="calc-row"><span class="calc-label">Parcela mensal</span><span class="calc-val highlight">${fmt(parcela)}</span></div>
+      <div class="calc-row"><span class="calc-label">Prazo</span><span class="calc-val">${prazoA} anos (${n} parcelas)</span></div>
+      <div class="calc-row"><span class="calc-label">Total pago</span><span class="calc-val">${fmt(totalPago)}</span></div>
+      <div class="calc-row"><span class="calc-label">Total em juros</span><span class="calc-val" style="color:var(--red)">${fmt(jurosTotal)}</span></div>
+    </div>`;
+}
+
+/* ---- TABS ---- */
+function setTab(name, btn) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (name==='painel') { applyConfig(); calc(); }
+}
+
+function renderAll() { renderAportes(); renderFontes(); renderGastos(); renderCheck(); }
+
+/* ---- AUTO SYNC a cada 30s ---- */
+setInterval(async () => {
+  try {
+    const remote = await remoteGet();
+    if (remote) {
+      state = remote;
+      if (!state.checks||!state.checks.length)
+        state.checks = CHECKS_DEFAULT.map((t,i)=>({id:i,text:t,done:false}));
+      if (!state.gastos) state.gastos = [];
+      applyConfig(); renderAll(); calc();
+    }
+  } catch(e) {}
+}, 30000);
+
+init();
+</script>
+</body>
+</html>
+tial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Cofre">
